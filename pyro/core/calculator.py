@@ -6,18 +6,27 @@ from sympy import symbols, Eq, nsolve
 def oxy_calc(oxi_id:int,fuel_id:int,balance)->float:
         no_oxi_flag=True
         no_fuel_flag=True
-        oxi=db_comp_get(oxi_id)
-        fuel=db_comp_get(fuel_id)
-        dem_oxi=oxi.demidov_coeff
-        dem_fuel=fuel.demidov_coeff
-     
+        try:
+                oxi=db_comp_get(oxi_id)
+                fuel=db_comp_get(fuel_id)
+        except Exception as e :
+                raise ValueError(f"Не поучилось загрузть компоненты {e}")
+        if oxi.demidov_coeff==0 or fuel.demidov_coeff==0:
+                raise ValueError("Коэффициент Демидова не может быть нулевым") 
         x1, x2,  = symbols('x1 ,x2')
         equations=[
-        Eq(x1/dem_oxi - x2/dem_fuel , balance),
+        Eq(x1/oxi.demidov_coeff - x2/fuel.demidov_coeff , balance),
         Eq(x1 + x2 , 100),]
-        initial_guess = [50, 50]
-        comp_ratio = nsolve(equations, (x1, x2), initial_guess)
-        return comp_ratio[0],comp_ratio[1]
+        try:
+                initial_guess = [50, 50]
+                oxi_part, fuel_part = nsolve(equations, (x1, x2), initial_guess)
+        except:
+                raise ValueError("Не удалось решить уравнение")
+        if oxi_part <0 :
+                raise ValueError("Массовая доля окислителя - меньше нуля выбереите более эффективное горючее или увеличте запрашиваемый ОБ")
+        elif fuel_part <0 :
+                raise ValueError("Массовая доля горючего - меньше нуля выбереите более эффективное горючее или снизьте запрашиваемый ОБ")
+        return round(oxi_part,3),round(fuel_part,3)
   
 #Для дорботки по несколько компонентов
    # for i in comp_ids:

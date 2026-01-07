@@ -3,12 +3,10 @@ from pyro.data.db_loader import db_comp_get
 from sympy import symbols, Eq, nsolve
 
 #Функция - считает небходимое содержание компонентов по двум компонентам и желаемому окислительному балансу 
-def oxy_calc(oxi_id:int,fuel_id:int,balance)->float:
-        no_oxi_flag=True
-        no_fuel_flag=True
+def oxy_calc(oxi_id:int,fuel_id:int,balance)->tuple [float,float]:
         try:
-                oxi=db_comp_get(oxi_id)
-                fuel=db_comp_get(fuel_id)
+                oxi=db_comp_get(oxi_id,"oxi")
+                fuel=db_comp_get(fuel_id,"fuel")
         except Exception as e :
                 raise ValueError(f"Не поучилось загрузть компоненты {e}")
         if oxi.demidov_coeff==0 or fuel.demidov_coeff==0:
@@ -25,7 +23,7 @@ def oxy_calc(oxi_id:int,fuel_id:int,balance)->float:
         if oxi_part <0 :
                 raise ValueError("Массовая доля окислителя - меньше нуля выбереите более эффективное горючее или увеличте запрашиваемый ОБ")
         elif fuel_part <0 :
-                raise ValueError("Массовая доля горючего - меньше нуля выбереите более эффективное горючее или снизьте запрашиваемый ОБ")
+                raise ValueError("Массовая доля горючего - меньше нуля выбереите более эффективный окислитель или снизьте запрашиваемый ОБ")
         return round(oxi_part,3),round(fuel_part,3)
   
 #Для дорботки по несколько компонентов

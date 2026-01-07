@@ -1,0 +1,26 @@
+pyrotech-calculator/
+├── pyrotech/                     # основной пакет Python
+│   ├── __init__.py               # делает каталог пакетом
+│   ├── core/                     # расчётная логика (твой "чёрный ящик")
+│   │   ├── __init__.py
+│   │   ├── calculator.py         # функции: oxy_balance(), reverse_calc(), heat_of_combustion()
+│   │   └── models.py             # классы: Oxidizer, Fuel, Mixture (если будешь их использовать)
+│   ├── data/                     # работа с данными
+│   │   ├── __init__.py
+│   │   ├── loaders.py            # загрузка Excel → объекты Oxidizer/Fuel
+│   │   └── constants.py          # списки: onelist, halflist, Kwd и т.д.
+│   ├── ui/                       # графический интерфейс
+│   │   ├── __init__.py
+│   │   └── tk_gui.py             # только Tkinter, без расчётов
+│   └── cli/                      # (опционально в январе, обязательно в феврале)
+│       ├── __init__.py
+│       └── main.py               # CLI через argparse
+├── data/                         # внешние данные (не код!)
+│   ├── comp_lib_fuel.xlsx
+│   └── comp_lib_oxy.xlsx
+├── tests/                        # тесты
+│   ├── __init__.py
+│   └── test_calculator.py
+├── main.py                       # точка входа: запуск GUI или CLI
+├── requirements.txt              # зависимости
+└── README.md                     # описание проекта

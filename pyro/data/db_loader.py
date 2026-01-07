@@ -35,7 +35,7 @@ def lib_db_insert(lib:Library,conn=connection ) :
     for comp in lib:
         formula_json = json.dumps(comp.formula)
         with conn.cursor() as cur:
-            if comp.type=="oxi":
+            if comp.type=="oxy":
                     cur.execute("""INSERT INTO 
                                 oxis (number,name,enthalpy,demidov_coeff,molar_mass,formula) 
                                 VALUES
@@ -66,19 +66,28 @@ def lib_db_insert(lib:Library,conn=connection ) :
                                 )
                     )
             conn.commit()
+            cur.close()
 # Получение экземпляра компонента из БД по id
 def db_comp_get(comp_id:int,comp_type)-> Component:
     cur=connection.cursor()
-    if comp_type=="oxi":
-        cur.execute("""SELECT number,name,enthalpy,demidov_coeff,molar_mass,formula FROM oxis WHERE id = %s """,[comp_id])
+    if comp_type=="oxy":
+        cur.execute("""SELECT id,name,enthalpy,demidov_coeff,molar_mass,formula FROM oxis WHERE id = %s """,[comp_id])
     elif comp_type=="fuel":
-        cur.execute("""SELECT number,name,enthalpy,demidov_coeff,molar_mass,formula FROM fuels WHERE id = %s """,[comp_id])
+        cur.execute("""SELECT id,name,enthalpy,demidov_coeff,molar_mass,formula FROM fuels WHERE id = %s """,[comp_id])
     a=cur.fetchone()
     #print(*a,type(a))
     comp=Component(comp_type,*a)
+    cur.close()
     return comp
 
-
+def db_get_comps_by_type(comp_type):
+    cur=connection.cursor()
+    if comp_type=="oxy":
+        cur.execute("""SELECT id,name FROM oxis  """)
+    elif comp_type=="fuel":
+        cur.execute("""SELECT id,name FROM fuels """)
+    rows=cur.fetchall()
+    return rows
 
 init_db(connection)
 cur=connection.cursor()

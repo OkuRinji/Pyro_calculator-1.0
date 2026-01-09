@@ -12,6 +12,9 @@ pyrotech-calculator/
 │   ├── ui/                       # графический интерфейс
 │   │   ├── __init__.py
 │   │   └── tk_gui.py             # только Tkinter, без расчётов
+│   ├── api/                      # приложение fast api 
+│   │   ├── __init__.py
+│   │   └── main.py  
 │   └── cli/                      # (опционально в январе, обязательно в феврале)
 │       ├── __init__.py
 │       └── main.py               # CLI через argparse

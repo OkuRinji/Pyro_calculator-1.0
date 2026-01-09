@@ -10,28 +10,26 @@ def load_library_from_excel(filepath:str) -> Library:
     sheet=wrkbk.active   
     element_names=[]
     new_lib=Library()
-    for j in range(6,sheet.max_column+1):
+    for j in range(5,sheet.max_column+1):
             elem=sheet.cell(row=1,column=j).value
             if elem is not None:
                  element_names.append(elem)
     if len(element_names)>6:              
-        comp_type=("oxi")
+        comp_type=("oxy")
     else: comp_type=("fuel")
     for i in range(2, sheet.max_row+1):
-        newcomp=[]
         formula={}
         name = sheet.cell(row=i, column=1).value or f"Component_{i}"
-        number=sheet.cell(row=i, column=2).value
-        enthalpy = safe_float(sheet.cell(row=i, column=3).value) 
-        demidov_coeff =safe_float(sheet.cell(row=i, column=4).value) 
-        molar_mass=safe_float(sheet.cell(row=i, column=5).value) 
-        for idx,j in enumerate(range(6,sheet.max_column+1)):
+        enthalpy = safe_float(sheet.cell(row=i, column=2).value) 
+        demidov_coeff =safe_float(sheet.cell(row=i, column=3).value) 
+        molar_mass=safe_float(sheet.cell(row=i, column=4).value) 
+        for idx,j in enumerate(range(5,sheet.max_column+1)):
             value=sheet.cell(row=i, column=j).value
             element_name=element_names[idx]
             formula[element_name]=float(value) if value is not None else  0.0 
 
         
-        new_lib.add_component(Component(comp_type,name,number,enthalpy,demidov_coeff,molar_mass,formula))
+        new_lib.add_component(Component(comp_type,name,enthalpy,demidov_coeff,molar_mass,formula))
     return new_lib
 
 

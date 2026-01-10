@@ -1,15 +1,17 @@
-
+from pydantic import BaseModel
+from typing import Literal
 # Класс компонента олицевторяет компонент пиротехничесого состава и некоторые его свойства
-class Component():
-    def __init__(self, type:str, name:str,enthalpy:float, demidov_coeff:float,molar_mass:float,formula: dict[str , float] ):
-      self.type=type
-      self.name = name
-      self.enthalpy = enthalpy
-      self.demidov_coeff =demidov_coeff
-      self.molar_mass=molar_mass
-      self.formula=formula 
-    def __repr__(self):
-        return f"Component(Number:{self.name} enthalpy {self.enthalpy} demidov coff {self.demidov_coeff} molarmass={self.molar_mass} formula={self.formula}) "
+
+
+class Component(BaseModel):
+      type:Literal['oxy','fuel']
+      name :str
+      enthalpy : float|int
+      demidov_coeff :float|int
+      molar_mass:float|int
+      formula:dict 
+#     def __repr__(self):
+#         return f"Component(Number:{self.name} enthalpy {self.enthalpy} demidov coff {self.demidov_coeff} molarmass={self.molar_mass} formula={self.formula}) "
 
 
 # Класс списка компонентов ( костыль для чтения из Excel веротяно уберу )

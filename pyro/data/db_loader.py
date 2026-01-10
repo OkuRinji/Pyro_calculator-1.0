@@ -1,7 +1,8 @@
 import psycopg2
 from .models import Library, Component
 import json
-connection = psycopg2.connect( host="localhost", port="5432",user='postgres',password="Hinbrg456", dbname='pyrotech')
+from conf import connection
+
 #Инициализация бд- создание таблица в случае если ее еще нет
 def init_db(conn=connection):
     with conn.cursor() as cur:
@@ -28,42 +29,46 @@ def init_db(conn=connection):
             );
         """)
         conn.commit()
+       
+#Добавление одного копонента в ДБ 
+def comp_insert(comp,conn=connection):
+    formula_json = json.dumps(comp.formula)
+    with conn.cursor() as cur:
+        if comp.type=="oxy":
+                cur.execute("""INSERT INTO 
+                            oxis (name,enthalpy,demidov_coeff,molar_mass,formula) 
+                            VALUES
+                            (%s,%s,%s,%s,%s)
+                            """,
+                        (
+                            comp.name,
+                            comp.enthalpy,
+                            comp.demidov_coeff,
+                            comp.molar_mass,
+                            formula_json
+                            )
+                )
+        elif comp.type=="fuel":
+            cur.execute("""INSERT INTO 
+                            fuels (name,enthalpy,demidov_coeff,molar_mass,formula) 
+                            VALUES
+                            (%s,%s,%s,%s,%s)
+                            """,
+                        (
+                            comp.name,
+                            comp.enthalpy,
+                            comp.demidov_coeff,
+                            comp.molar_mass,
+                            formula_json
+                            )
+                )
+        conn.commit()
+        cur.close()
 #Добавление списка компонентов класса Library в БД
 def lib_db_insert(lib:Library,conn=connection ) :
     for comp in lib:
-        formula_json = json.dumps(comp.formula)
-        with conn.cursor() as cur:
-            if comp.type=="oxy":
-                    cur.execute("""INSERT INTO 
-                                oxis (name,enthalpy,demidov_coeff,molar_mass,formula) 
-                                VALUES
-                                (%s,%s,%s,%s,%s)
-                                """,
-                            (
-                                comp.name,
-                                comp.enthalpy,
-                                comp.demidov_coeff,
-                                comp.molar_mass,
-                                formula_json
-                                )
-                    )
-            elif comp.type=="fuel":
-                cur.execute("""INSERT INTO 
-                                fuels (name,enthalpy,demidov_coeff,molar_mass,formula) 
-                                VALUES
-                                (%s,%s,%s,%s,%s)
-                                """,
-                            (
-                                comp.name,
-                                comp.enthalpy,
-                                comp.demidov_coeff,
-                                comp.molar_mass,
-                                formula_json
-                                )
-                    )
-            conn.commit()
-            cur.close()
-# Получение экземпляра компонента из БД по id
+        comp_insert(comp)
+#Получение экземпляра компонента из БД по id
 def db_comp_get(comp_id:int,comp_type)-> Component:
     cur=connection.cursor()
     if comp_type=="oxy":
@@ -85,16 +90,16 @@ def db_get_comps_by_type(comp_type):
     rows=cur.fetchall()
     return rows
 
-init_db(connection)
-cur=connection.cursor()
-cur.execute("SELECT * FROM components")
-data=cur.fetchall()
+# init_db(connection)
+# cur=connection.cursor()
+# cur.execute("SELECT * FROM components")
+# data=cur.fetchall()
 #print(data) 
 
-from .loaders import load_library_from_excel
-lib=load_library_from_excel("data/comp_lib_oxy.xlsx")
-# lib_db_insert(lib)
+# from .loaders import load_library_from_excel
+# lib=load_library_from_excel("data/comp_lib_oxy.xlsx")
+# # lib_db_insert(lib)
 
-cur.execute("SELECT * FROM components")
-data=cur.fetchall()
-#print(data) 
+# cur.execute("SELECT * FROM components")
+# data=cur.fetchall()
+# #print(data) 

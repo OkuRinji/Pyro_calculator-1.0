@@ -1,6 +1,8 @@
 from pyro.core.calculator import oxy_calc,_calculate_from_components
 import pytest
 from pyro.data.models import Component
+from pyro.data import db_loader
+from pydantic import ValidationError
 
 @pytest.fixture
 def nh4no3():
@@ -45,5 +47,6 @@ class TestBalanceCalculator():
     def test_impossible_balance(self,nh4no3, mg):
         with pytest.raises(ValueError, match="Отрицательные"):
             _calculate_from_components(nh4no3, mg, balance=1000.0)
+
 
 

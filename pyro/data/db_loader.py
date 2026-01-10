@@ -87,6 +87,7 @@ def db_get_comps_by_type(comp_type):
         cur.execute("""SELECT id,name FROM oxis  """)
     elif comp_type=="fuel":
         cur.execute("""SELECT id,name FROM fuels """)
+    else : return f"{comp_type} - неверный тип компонента попробуйте oxy или fuel "
     rows=cur.fetchall()
     return rows
 

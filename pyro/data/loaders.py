@@ -29,7 +29,7 @@ def load_library_from_excel(filepath:str) -> Library:
             formula[element_name]=float(value) if value is not None else  0.0 
 
         
-        new_lib.add_component(Component(comp_type,name,enthalpy,demidov_coeff,molar_mass,formula))
+        new_lib.add_component(Component(type=comp_type,name=name,enthalpy=enthalpy,demidov_coeff=demidov_coeff,molar_mass=molar_mass,formula=formula))
     return new_lib
 
 

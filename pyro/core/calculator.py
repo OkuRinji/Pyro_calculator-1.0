@@ -26,6 +26,28 @@ def oxy_calc(oxy_id:int,fuel_id:int,balance)->tuple [float,float]:
                 raise ValueError("Массовая доля горючего - меньше нуля выбереите более эффективный окислитель или снизьте запрашиваемый ОБ")
         return round(oxy_part,3),round(fuel_part,3)
   
+
+
+def _calculate_from_components(oxi: Component, fuel: Component, balance: float) -> tuple[float, float]:
+    if oxi.demidov_coeff == 0 or fuel.demidov_coeff == 0:
+        raise ValueError("Коэффициент Демидова не может быть нулевым")
+    x1, x2 = symbols('x1 x2')
+    equations = [
+        Eq(x1 + x2, 100),
+        Eq(x1 / oxi.demidov_coeff - x2 / fuel.demidov_coeff, balance)
+    ]
+
+    try:
+        solution = nsolve(equations, (x1, x2), (50, 50))
+        w_oxi, w_fuel = float(solution[0]), float(solution[1])
+    except Exception as e:
+        raise RuntimeError(f"Не удалось решить систему: {e}")
+
+    if w_oxi < 0 or w_fuel < 0:
+        raise ValueError(f"Отрицательные массовые доли — состав невозможен ")
+
+    return round(w_oxi, 3), round(w_fuel, 3)
+
 #Для дорботки по несколько компонентов
    # for i in comp_ids:
         #         comp=db_comp_get(i)

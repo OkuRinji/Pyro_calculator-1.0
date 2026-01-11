@@ -1,3 +1,14 @@
-openpyxl==3.1.2
-sympy==1.12
-psycopg2-binary==2.9.9
+# Основные зависимости
+openpyxl==3.1.2          # загрузка Excel
+sympy==1.12              # численные расчёты
+psycopg2-binary==2.9.9   # работа с PostgreSQL
+
+# FastAPI и сервер
+fastapi==0.115.0         # веб-фреймворк
+uvicorn[standard]==0.32.0  # ASGI-сервер (включает watchgod для reload)
+
+# Тестирование
+pytest==8.3.0            # фреймворк для тестов
+
+# Дополнительно (если используешь Pydantic v2)
+pydantic==2.10.0

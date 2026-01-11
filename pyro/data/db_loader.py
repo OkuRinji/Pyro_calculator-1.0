@@ -77,7 +77,7 @@ def db_comp_get(comp_id:int,comp_type)-> Component:
         cur.execute("""SELECT name,enthalpy,demidov_coeff,molar_mass,formula FROM fuels WHERE id = %s """,[comp_id])
     a=cur.fetchone()
     #print(*a,type(a))
-    comp=Component(comp_type,*a,)
+    comp=Component(type=comp_type,name=a[0],enthalpy=a[1],demidov_coeff=a[2],molar_mass=a[3],formula=a[4])
     cur.close()
     return comp
 
